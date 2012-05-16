@@ -1171,7 +1171,7 @@ Handshake::write_bitfield() {
       uint32_t length = std::min<uint32_t>(bitfield->size_bytes() - m_writePos, m_writeBuffer.reserved()) - m_writeBuffer.size_end();
 
       if (length > 0) {
-        std::memcpy(m_writeBuffer.end(), bitfield->begin() + m_writePos + m_writeBuffer.size_end(), length);
+        std::memset(m_writeBuffer.end(), 0, length);
         m_encryption.info()->encrypt(m_writeBuffer.end(), length);
         m_writeBuffer.move_end(length);
       }
@@ -1185,7 +1185,9 @@ Handshake::write_bitfield() {
       m_writeBuffer.move_end(-length);
 
     } else {
-      m_writePos += write_unthrottled(bitfield->begin() + m_writePos,
+      char dummy[bitfield->size_bytes() - m_writePos];
+      std::memset(dummy, 0, bitfield->size_bytes() - m_writePos);
+      m_writePos += write_unthrottled(dummy,
                                       bitfield->size_bytes() - m_writePos);
     }
   }

@@ -537,7 +537,7 @@ PeerConnection<type>::fill_write_buffer() {
                                                                 rak::greater(m_peerChunks.have_timer(), rak::mem_ref(&DownloadMain::have_queue_type::value_type::first)));
 
     do {
-      m_up->write_have((--last)->second);
+      --last;
     } while (last != haveQueue->begin() && m_up->can_write_have());
 
     m_peerChunks.set_have_timer(last->first + 1);
